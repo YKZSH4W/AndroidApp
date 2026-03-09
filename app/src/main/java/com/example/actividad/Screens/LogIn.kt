@@ -98,7 +98,9 @@ fun LogInMenu(navController: NavController) {
             Spacer(modifier = Modifier.height(5.dp))
 
             Button(
-                onClick = { },
+                onClick = {
+                    navController.navigate("signup")
+                },
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
