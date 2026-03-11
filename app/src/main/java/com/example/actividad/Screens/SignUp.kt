@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +18,31 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+fun validateField(input: String): Boolean{
+    return input.isEmpty()
+}
+
 @Composable
 fun SignUpMenu(navController: NavController) {
+    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var pass by remember { mutableStateOf("") }
+    var confirmedPass by remember { mutableStateOf("") }
+    var isEmptyField by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -52,8 +70,11 @@ fun SignUpMenu(navController: NavController) {
                     Spacer(modifier = Modifier.height(50.dp))
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = { },
+                        value = name,
+                        onValueChange = {
+                            name = it
+                            isEmptyField = validateField(it)
+                        },
                         label = { Text("Full Name") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -67,8 +88,8 @@ fun SignUpMenu(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = { },
+                        value = phone,
+                        onValueChange = { phone = it },
                         label = { Text("Phone Number") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -82,8 +103,8 @@ fun SignUpMenu(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = { },
+                        value = email,
+                        onValueChange = { email = it },
                         label = { Text("Email") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.secondary,
@@ -97,9 +118,13 @@ fun SignUpMenu(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = { },
+                        value = pass,
+                        onValueChange = { pass = it },
                         label = { Text("Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
@@ -112,9 +137,13 @@ fun SignUpMenu(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = { },
+                        value = confirmedPass,
+                        onValueChange = { confirmedPass = it },
                         label = { Text("Confirm Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password
+                        ),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
@@ -129,6 +158,7 @@ fun SignUpMenu(navController: NavController) {
                     Button(
                         onClick = { },
                         shape = RoundedCornerShape(5.dp),
+                        enabled = isEmptyField,
                         modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary,
