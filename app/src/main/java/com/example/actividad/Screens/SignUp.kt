@@ -30,8 +30,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-fun validateField(input: String): Boolean{
-    return input.isEmpty()
+fun isValidName(name: String): Boolean {
+    return name.matches(Regex("^[a-zA-ZÁÉÍÓÚáéíóúñÑ ]+$"))
+}
+
+fun isValidEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+fun isValidPhone(phone: String): Boolean {
+    return phone.matches(Regex("^[0-9]{10}$"))
+}
+
+fun isValidPasswords(pass: String, confirmedPass: String): Boolean {
+    return pass.isNotEmpty() && pass == confirmedPass
 }
 
 @Composable
@@ -41,7 +53,11 @@ fun SignUpMenu(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
     var confirmedPass by remember { mutableStateOf("") }
-    var isEmptyField by remember { mutableStateOf(false) }
+
+    val isFormValid = isValidName(name) &&
+            isValidEmail(email) &&
+            isValidPhone(phone) &&
+            isValidPasswords(pass, confirmedPass)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -52,140 +68,93 @@ fun SignUpMenu(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
+            Text(
+                text = "Create Your Account!",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.displaySmall
+            )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Full Name") },
+                isError = name.isNotEmpty() && !isValidName(name),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Phone Number") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = phone.isNotEmpty() && !isValidPhone(phone),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                isError = email.isNotEmpty() && !isValidEmail(email),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = pass,
+                onValueChange = { pass = it },
+                label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
+                value = confirmedPass,
+                onValueChange = { confirmedPass = it },
+                label = { Text("Confirm Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = confirmedPass.isNotEmpty() && !isValidPasswords(pass, confirmedPass),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
+            )
+
+            Spacer(Modifier.height(50.dp))
+
+            Button(
+                onClick = { /* Acción de crear cuenta */ },
+                shape = RoundedCornerShape(5.dp),
+                enabled = isFormValid, // ✅ Botón depende de validaciones
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                )
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(5.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Create Your Account!",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.displaySmall
-                    )
+                Text("Create")
+            }
 
-                    Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = {
-                            name = it
-                            isEmptyField = validateField(it)
-                        },
-                        label = { Text("Full Name") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = phone,
-                        onValueChange = { phone = it },
-                        label = { Text("Phone Number") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = { Text("Email") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = pass,
-                        onValueChange = { pass = it },
-                        label = { Text("Password") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = confirmedPass,
-                        onValueChange = { confirmedPass = it },
-                        label = { Text("Confirm Password") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp)
-                    )
-
-                    Spacer(Modifier.height(50.dp))
-
-                    Button(
-                        onClick = { },
-                        shape = RoundedCornerShape(5.dp),
-                        enabled = isEmptyField,
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                        )
-
-                    ) {
-                        Text("Create")
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Button(
-                        onClick = {
-                            navController.navigate("welcome")
-                        },
-                        shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White,
-                            contentColor = MaterialTheme.colorScheme.secondary
-                        )
-
-                    ) {
-                        Text("Cancel")
-                    }
-                }
+            Button(
+                onClick = { navController.navigate("welcome") },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Text("Cancel")
             }
         }
     }
