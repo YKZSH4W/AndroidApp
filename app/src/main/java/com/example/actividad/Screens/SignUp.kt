@@ -15,7 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +53,6 @@ fun SignUpMenu(navController: NavController) {
     var pass by remember { mutableStateOf("") }
     var confirmedPass by remember { mutableStateOf("") }
 
-    // ✅ Estado del botón: se calcula dinámicamente
     val isFormValid = isValidName(name) &&
             isValidEmail(email) &&
             isValidPhone(phone) &&
@@ -132,9 +130,9 @@ fun SignUpMenu(navController: NavController) {
             Spacer(Modifier.height(50.dp))
 
             Button(
-                onClick = { /* Acción de crear cuenta */ },
+                onClick = { },
                 shape = RoundedCornerShape(5.dp),
-                enabled = isFormValid, // ✅ Botón depende de validaciones
+                enabled = isFormValid,
                 modifier = Modifier.fillMaxWidth().padding(40.dp, 0.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,

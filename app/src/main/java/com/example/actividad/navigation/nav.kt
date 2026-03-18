@@ -15,7 +15,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "welcome"
+        startDestination = "main"
     ) {
         composable("welcome") {
             WelcomeMenu(navController)
