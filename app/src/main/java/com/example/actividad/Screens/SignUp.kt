@@ -54,6 +54,7 @@ fun SignUpMenu(navController: NavController) {
     var pass by remember { mutableStateOf("") }
     var confirmedPass by remember { mutableStateOf("") }
 
+    // ✅ Estado del botón: se calcula dinámicamente
     val isFormValid = isValidName(name) &&
             isValidEmail(email) &&
             isValidPhone(phone) &&

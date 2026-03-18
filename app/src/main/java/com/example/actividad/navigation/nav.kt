@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.actividad.Screens.LogInMenu
+import com.example.actividad.Screens.MainMenu
 import com.example.actividad.Screens.SignUpMenu
 import com.example.actividad.Screens.WelcomeMenu
 
@@ -26,6 +27,10 @@ fun AppNavigation() {
 
         composable("signup") {
             SignUpMenu(navController)
+        }
+
+        composable("main") {
+            MainMenu(navController)
         }
     }
 }
