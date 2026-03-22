@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -27,21 +26,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.actividad.components.Contact
-
 @Composable
 fun MainMenu(navController: NavController) {
-    val contacts = listOf(Pair("Juan Perez", "6122345522"))
-
     var phone by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
 
-    val contactList = remember{ mutableStateListOf<Pair<String, String>>() }
-    contactList.add(Pair("Juan Perez", "6122345522"))
+    val contactList = remember {
+        mutableStateListOf(Pair("Juan Perez", "6122345522"))
+    }
 
     Column(
         Modifier.padding(40.dp)
@@ -50,17 +45,14 @@ fun MainMenu(navController: NavController) {
             value = name,
             onValueChange = { name = it },
             label = { Text("Nombre") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
-            label = { Text("Numero") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            isError = phone.isNotEmpty() && !isValidPhone(phone),
+            label = { Text("Número") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -73,7 +65,9 @@ fun MainMenu(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { },
+                    onClick = {
+                        contactList.clear()
+                    },
                     shape = RoundedCornerShape(5.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
                     colors = ButtonDefaults.buttonColors(
@@ -85,9 +79,15 @@ fun MainMenu(navController: NavController) {
                 }
 
                 Button(
-                    onClick = { },
+                    onClick = {
+                        if (name.isNotBlank() && phone.isNotBlank()) {
+                            contactList.add(Pair(name, phone))
+                            name = ""
+                            phone = ""
+                        }
+                    },
                     shape = RoundedCornerShape(5.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
+                    enabled = isValidPhone(phone),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = Color.White
@@ -98,16 +98,13 @@ fun MainMenu(navController: NavController) {
             }
         }
 
-        Text(
-            "Contactos",
-            modifier = Modifier.padding(20.dp, 0.dp)
-        )
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text("Contactos")
 
         LazyColumn {
-            items(contactList) {
-                    contact ->
+            items(contactList) { contact ->
                 Contact(contact.first, contact.second)
-
             }
         }
     }
